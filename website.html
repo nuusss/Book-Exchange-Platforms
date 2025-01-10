@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Exchange Platform</title>
+    <style>
+        /* General Styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f5;
+        }
+        header {
+            background: linear-gradient(90deg, #6a11cb, #2575fc);
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            font-size: 1.5rem;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 2rem auto;
+        }
+        .button-container {
+            text-align: center;
+            margin: 2rem 0;
+        }
+        .button-container button {
+            background-color: #2575fc;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            margin: 0.5rem;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .button-container button:hover {
+            background-color: #6a11cb;
+        }
+        .hidden {
+            display: none;
+        }
+        .search-bar input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+        .book-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .book-card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            width: calc(33.33% - 1rem);
+        }
+        .book-card h3 {
+            margin: 0 0 0.5rem;
+        }
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background: #6a11cb;
+            color: white;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        Book Exchange Platform
+    </header>
+    <div class="container">
+        <!-- Home Page -->
+        <div id="homePage" class="button-container">
+            <h2>Welcome! What would you like to do?</h2>
+            <button onclick="showSection('postBook')">Post a Book</button>
+            <button onclick="showSection('findBook')">Find a Book</button>
+        </div>
+
+        <!-- Post a Book Section -->
+        <div id="postBook" class="hidden">
+            <h2>Post a Book</h2>
+            <input type="text" id="bookTitle" placeholder="Book Title" required>
+            <input type="text" id="bookAuthor" placeholder="Author Name" required>
+            <textarea id="bookDescription" placeholder="Book Description" rows="3"></textarea>
+            <input type="email" id="bookEmail" placeholder="Your Email (for contact)" required>
+            <button onclick="addBook()">Post Book</button>
+            <button onclick="goBack()">Back to Home</button>
+        </div>
+
+        <!-- Find a Book Section -->
+        <div id="findBook" class="hidden">
+            <h2>Find a Book</h2>
+            <input type="text" id="searchInput" placeholder="Search for books..." oninput="filterBooks()">
+            <div id="bookList" class="book-list">
+                <!-- Books will be dynamically added here -->
+            </div>
+            <button onclick="goBack()">Back to Home</button>
+        </div>
+    </div>
+    <footer>
+        &copy; 2024 Book Exchange Platform. All rights reserved.
+    </footer>
+
+    <script>
+        const bookList = []; // Array to store books
+
+        // Show the selected section
+        function showSection(sectionId) {
+            document.getElementById("homePage").classList.add("hidden");
+            document.getElementById(sectionId).classList.remove("hidden");
+        }
+
+        // Go back to the home page
+        function goBack() {
+            document.getElementById("postBook").classList.add("hidden");
+            document.getElementById("findBook").classList.add("hidden");
+            document.getElementById("homePage").classList.remove("hidden");
+        }
+
+        // Add a book to the list
+        function addBook() {
+            const title = document.getElementById("bookTitle").value;
+            const author = document.getElementById("bookAuthor").value;
+            const description = document.getElementById("bookDescription").value;
+            const email = document.getElementById("bookEmail").value;
+
+            // Add book to the array
+            bookList.push({ title, author, description, email });
+
+            // Clear the form
+            document.getElementById("bookTitle").value = "";
+            document.getElementById("bookAuthor").value = "";
+            document.getElementById("bookDescription").value = "";
+            document.getElementById("bookEmail").value = "";
+            alert("Book posted successfully!");
+        }
+
+        // Filter books based on search input
+        function filterBooks() {
+            const query = document.getElementById("searchInput").value.toLowerCase();
+            const bookListDiv = document.getElementById("bookList");
+            bookListDiv.innerHTML = ""; // Clear the book list
+
+            bookList.forEach(book => {
+                if (book.title.toLowerCase().includes(query) || book.author.toLowerCase().includes(query)) {
+                    const bookCard = document.createElement("div");
+                    bookCard.classList.add("book-card");
+                    bookCard.innerHTML = `
+                        <h3>Book Title: ${book.title}</h3>
+                        <p>Author: ${book.author}</p>
+                        <p>Description: ${book.description}</p>
+                        <div class="contact">
+                            <a href="mailto:${book.email}">Contact Owner</a>
+                        </div>
+                    `;
+                    bookListDiv.appendChild(bookCard);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
